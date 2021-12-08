@@ -9,23 +9,24 @@ routes.get('/', (req, res) => {
 //Contact routes
 
 routes.get('/contacts?', async (req, res) => {
-    resd = await Contacts.getContacts()
+    resd = await Contacts.getContacts(req)
     res.json({ result: resd })
 });
 
 routes.post('/contacts', async (req, res) => {
-    resd = await Contacts.addContact()
-    res.status(200).json({ result: resd })
+    resd = await Contacts.addContact(req)
+    res.json({ result: resd })
 });
 
 routes.delete('/contacts/:id', async (req, res) => {
-    resd = await Contacts.deleteContact()
-    res.status(200).json({ result: resd })
+    resd = await Contacts.deleteContact(req)
+    res.json({ result: resd })
 });
 
 routes.put('/contacts/:id', async (req, res) => {
-    resd = await Contacts.updateContact()
-    res.status(200).json({ result: resd })
+    resd = await Contacts.updateContact(req)
+    console.log(resd)
+    res.json({ result: resd })
 });
 
 module.exports = routes;
