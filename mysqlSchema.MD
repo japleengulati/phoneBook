@@ -17,4 +17,8 @@ INSERT INTO contacts(`name`,`phonework`,`phonehome`,`phonemobile`,`emailaddress`
 `mailingAddressCity`, `mailingAddressCountry`, `mailingAddress`, `postcode`) values('Alan', 074375839, 849373, 252737382,
  'alanshaw@gmail.com', 'London', 'United Kingdom', '13, Rennes Drive, Rickmansworth', 'HA5 3EE')
 
+ALTER TABLE `japnadb`.`contacts` 
+CHANGE COLUMN `user_id` `user_id` VARCHAR(255) NOT NULL ;
+
+//Added more records and added User IDs to existing 
 
