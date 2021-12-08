@@ -26,10 +26,10 @@ function makeDb(config) {
 
 
 // ------------------ CONTROLLERS FOR CONTACTS -------------------
-async function getAllContacts($) {
+async function getAllContacts(req) {
     let user_id='ADMIN'
-    if ($.query.user_id){
-        user_id=$.query.user_id
+    if (req.query.user_id){
+        user_id=req.query.user_id
     }
     const db = makeDb(dbConfig);
     let contacts = []
@@ -59,25 +59,31 @@ async function getAllContacts($) {
 }
 //There should be more get contact endpoints, to get 
 
-async function addContact($) {
+async function addContact(req) {
     const db = makeDb(dbConfig);
     let contact = []
     try {
-        contact = req.body.contact
-        if (contacts.length == 0) {
-            console.log("contacts", contacts)
-            //Status code error also to be included
-            return ({status: false, message: "No contacts provided to be inserted!"})
+        if (req.body && req.body.contact){
+            contact = req.body.contact
+            if (contact.length == 0) {
+                console.log("contacts", contact)
+                //Status code error also to be included
+                return ({status: false, message: "No contacts provided to be inserted!"})
+            }
+            else {
+                await db.query("START TRANSACTION")
+    
+                // FE to send as null values (non-required) that haven't been input by the user
+                let contactInsert = await db.query("INSERT INTO contacts (name, phonework, phonehome, phonemobile, emailaddress, mailingAddressCity, mailingAddressCountry, emailingAddress, postcode) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)", [contact.name, contact.phonework, contact.phonehome, contact.phonemobile, contact.emailaddress, contact.mailingAddressCity, contact.mailingAddressCountry, contact.emailingAddress, contact.postcode])
+                console.log("Contact insert ==", contactInsert['insertId'])
+                let commit = await db.query('COMMIT')
+                return ({ 'Status': true, newContactID: 'contactInsert'['insertId'] })
+            }
         }
-        else {
-            await db.query("START TRANSACTION")
-
-            // FE to send as null values (non-required) that haven't been input by the user
-            let contactInsert = await db.query("INSERT INTO contacts (name, phonework, phonehome, phonemobile, emailaddress, mailingAddressCity, mailingAddressCountry, emailingAddress, postcode) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)", [contact.name, contact.phonework, contact.phonehome, contact.phonemobile, contact.emailaddress, contact.mailingAddressCity, contact.mailingAddressCountry, contact.emailingAddress, contact.postcode])
-            console.log("Contact insert ==", contactInsert['insertId'])
-            let commit = await db.query('COMMIT')
-            return ({ 'Status': true, newContactID: 'contactInsert'['insertId'] })
+        else{
+            return ("No contact provided to be inserted!")
         }
+        
     } catch (err) {
         let rollback = await db.query('ROLLBACK')
         return("ERROR", err)
@@ -86,7 +92,7 @@ async function addContact($) {
     }
 }
 
-async function deleteContact($) {
+async function deleteContact(req) {
     const db = makeDb(dbConfig)
     contactID = req.params.id
 
@@ -113,15 +119,21 @@ async function updateContact(req) {
         contactID = req.params.id
 
         if (contactID != null) {
+            if (req.body && req.body[0]['field'] && req.body[0]['value']){
+                await db.query("START TRANSACTION")
 
-            await db.query("START TRANSACTION")
+                let updateQuery = "UPDATE contacts SET `".concat(req.body[0]['field']).concat("` = '").concat(req.body[0]['value']).concat("' WHERE id = ").concat(contactID)
+    
+                let updatingRun = await db.query(updateQuery)
+    
+                let commit = await db.query('COMMIT')
+                return ({ 'Status': true, message: 'Contact Updated' })
+            }
 
-            let updateQuery = "UPDATE contacts SET `".concat(req.body[0]['field']).concat("` = '").concat(req.body[0]['value']).concat("' WHERE id = ").concat(contactID)
+           else{
+            return ('Field and value to be updated not provided')
 
-            let updatingRun = await db.query(updateQuery)
-
-            let commit = await db.query('COMMIT')
-            return ({ 'Status': true, message: 'Contact Updated' })
+           }
         }
         else {
 
