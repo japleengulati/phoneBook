@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/japleengulati/phoneBook/issues"
   },
-  "homepage": "https://github.com/japleengulati/phoneBook#readme"
+  "homepage": "https://github.com/japleengulati/phoneBook#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
