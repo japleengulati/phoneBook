@@ -53,6 +53,7 @@ async function getAllContacts(user_id='ADMIN') {
         await db.close();
     }
 }
+//There should be more get contact endpoints, to get 
 
 async function addContact($) {
     const db = makeDb(dbConfig);
@@ -77,6 +78,21 @@ async function addContact($) {
     }
 }
 
+async function deleteContact($) {
+    const db = makeDb(dbConfig)
+    contactID=req.params.contactID
+
+    try {
+            let contactInsert = await db.query("DELETE FROM contacts WHERE id=?", [contactID])
+            return({'Status': 'Successful', message: 'Contact Deleted'})
+        
+    } catch (err) {
+        console.log("ERROR in deleting contact", err)
+    } finally {
+        await db.close();
+    }
+}
 
 exports.getContacts = getAllContacts
 exports.addContact = addContact
+exports.deleteContact = deleteContact
