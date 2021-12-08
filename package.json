@@ -1,0 +1,19 @@
+{
+  "name": "phonebook",
+  "version": "1.0.0",
+  "description": "PhoneBook directory",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/japleengulati/phoneBook.git"
+  },
+  "author": "Japleen Gulati",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/japleengulati/phoneBook/issues"
+  },
+  "homepage": "https://github.com/japleengulati/phoneBook#readme"
+}
